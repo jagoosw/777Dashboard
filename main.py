@@ -46,7 +46,7 @@ if (time.time()-os.stat("plot.png").st_mtime)>600:
             ax2.plot([x,x],[0,bear[1]],linewidth=5)
             c-=1
         ax2.set_ylim(0)
-        ax2.legend([p[1] for p in df_unstack.keys()[:20]])
+        ax2.legend([p[1] for p in df_unstack.keys()[:20]], title="Leaderboard (right to left)")
         plot.set_xlim(1,day-adj+.2)
         plot.set_xlabel("Day")
         plot.set_ylabel("Total distance/m")
