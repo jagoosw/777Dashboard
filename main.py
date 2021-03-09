@@ -8,9 +8,9 @@ from requests import HTTPError
 
 st.title("The Redboy's 777 Laps of St Legends in memory of Sam Fitzsimmons")
 #try:
-if (time.time()-os.stat("plot.png").st_mtime)>0:
+if (time.time()-os.stat("plot.png").st_mtime)>3600/2:
     try:
-        data=pd.read_excel('https://drive.google.com/uc?id=1KOAFOCxiyeom2XjN7aDW4Sys1NYxjXqk&export=download',sheet_name='data_input').iloc[4:].drop(["Unnamed: 22","Unnamed: 23"],axis=1).fillna(0)
+        data=pd.read_excel('https://drive.google.com/uc?id=1KOAFOCxiyeom2XjN7aDW4Sys1NYxjXqk&export=download',sheet_name='data_input',engine='openpyxl').iloc[4:].drop(["Unnamed: 22","Unnamed: 23"],axis=1).fillna(0)
         total=[0,]+data.sum(axis=0).to_list()[1:]
         cumtot=[sum(total[:ind+1]) for ind,v in enumerate(total)]
         day=int(datetime.utcnow().strftime("%d"))
