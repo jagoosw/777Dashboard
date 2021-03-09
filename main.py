@@ -8,7 +8,7 @@ from requests import HTTPError
 
 st.title("The Redboy's 777 Laps of St Legends in memory of Sam Fitzsimmons")
 #try:
-if (time.time()-os.stat("plot.png").st_mtime)>3600/2:
+if (time.time()-os.stat("plot.png").st_mtime)>600:
     try:
         data=pd.read_excel('https://drive.google.com/uc?id=1KOAFOCxiyeom2XjN7aDW4Sys1NYxjXqk&export=download',sheet_name='data_input',engine='openpyxl').iloc[4:].drop(["Unnamed: 22","Unnamed: 23"],axis=1).fillna(0)
         total=[0,]+data.sum(axis=0).to_list()[1:]
@@ -49,9 +49,9 @@ if (time.time()-os.stat("plot.png").st_mtime)>3600/2:
         ax2.legend([p[1] for p in df_unstack.keys()[:20]])
         plot.set_xlim(1,day-adj+.2)
         plot.set_xlabel("Day")
-        plot.set_ylabel("Total distance")
-        ax2.set_ylabel("Individual distance")
-        plot.set_title("Our progress")
+        plot.set_ylabel("Total distance/m")
+        ax2.set_ylabel("Individual distance/m")
+        plot.set_title("The Redboy's 777 Laps of St Legends in memory of Sam Fitzsimmons: Our progress")
 
         fig = plot.get_figure()
         st.pyplot(fig)
@@ -65,4 +65,4 @@ st.markdown("""In May of last year our beloved Captain EEE, Sam Fitzsimmons, pas
 To raise money for the Bone Cancer Research Trust, the Garcons are undertaking a grueling challenge, bear crawling a cumulative 777 laps of the St. Legends pitch in 20+1 days begining the 1st of March.""")
 st.markdown("""To read our story, and for more details about the challenge, please see the link below:
 [https://uk.virginmoneygiving.com/StJohnsRedboys](https://uk.virginmoneygiving.com/StJohnsRedboys)""")
-st.markdown("""For source code and licence please see [GitHub](github.com/jagoosw/777Dashboard). Copyright 2021 Jago Strong-Wright [MIT Licence](github.com/jagoosw/777Dashboard/LICENCE.md)""",unsafe_allow_html=True)
+st.markdown("""For source code and licence please see [GitHub](https://github.com/jagoosw/777Dashboard). Copyright 2021 Jago Strong-Wright [MIT Licence](https://github.com/jagoosw/777Dashboard/LICENCE.md)""",unsafe_allow_html=True)
