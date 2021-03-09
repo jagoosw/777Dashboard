@@ -8,7 +8,7 @@ from requests import HTTPError
 
 st.title("The Redboy's 777 Laps of St Legends in memory of Sam Fitzsimmons")
 #try:
-if (time.time()-os.stat("data.dat").st_mtime)>600:
+if (time.time()-os.stat("data.dat").st_mtime)>600/2:
     try:
         data=pd.read_excel('https://drive.google.com/uc?id=1KOAFOCxiyeom2XjN7aDW4Sys1NYxjXqk&export=download',sheet_name='data_input',engine='openpyxl').iloc[4:].drop(["Unnamed: 22","Unnamed: 23"],axis=1).fillna(0)
         data.to_pickle("data.dat")
