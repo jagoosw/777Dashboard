@@ -42,8 +42,10 @@ df_unstack=df_unstack.sort_values([df_unstack.index[-1]],axis=1,ascending=False)
 names=[item[1] for item in df_unstack.keys().to_list()]
 dist=df_unstack.iloc[8].to_list()
 dists=[(name,dist[ind]) for ind,name in enumerate(names)]
+phone=st.checkbox("Optimise for phone",value=True)
+size=(9,16) if phone else (14,7)
+plot=df_unstack.plot(kind='area',y='distance', stacked = True,legend=False, figsize=size, cmap="gist_heat")
 
-plot=df_unstack.plot(kind='area',y='distance', stacked = True,legend=False, figsize=(9,16), cmap="gist_heat")
 ax2=plot.twinx()
 c=len(dists)
 adj=1 if cumtot[day-3]==cumtot[day-2] else 0
