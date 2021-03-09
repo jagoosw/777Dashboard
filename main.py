@@ -46,7 +46,8 @@ dists=[(name,dist[ind]) for ind,name in enumerate(names)]
 plot=df_unstack.plot(kind='area',y='distance', stacked = True,legend=False, figsize=(9,16), cmap="gist_heat")
 ax2=plot.twinx()
 c=len(dists)
-adj=0 if cumtot[day]!=cumtot[day-1] else 1
+adj=1 if cumtot[day-3]==cumtot[day-2] else 0
+
 for bear in dists:
         x=c*(day-adj)/len(dists)
         ax2.plot([x,x],[0,bear[1]],linewidth=5)
