@@ -40,7 +40,7 @@ df_unstack=d2.groupby(["day","name"]).sum().unstack()
 df_unstack=df_unstack.sort_values([df_unstack.index[-1]],axis=1,ascending=False)
 
 names=[item[1] for item in df_unstack.keys().to_list()]
-dist=df_unstack.iloc[8].to_list()
+dist=df_unstack.iloc[-1].to_list()
 dists=[(name,dist[ind]) for ind,name in enumerate(names)]
 phone=st.checkbox("Optimise for phone",value=True)
 size=(9,16) if phone else (14,7)
