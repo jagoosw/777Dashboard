@@ -72,12 +72,12 @@ with _lock:
     fig = plot.get_figure()
     st.pyplot(fig)
 
-st.markdown("""In May of last year our beloved Captain EEE, Sam Fitzsimmons, passed away in May last year with Ewing's Sarcoma - a rare form of bone cancer.
+st.markdown("""In May of last year our beloved Captain EEE, Sam Fitzsimmons, passed away with Ewing's Sarcoma - a rare form of bone cancer.
 To raise money for the Bone Cancer Research Trust, the Garcons are undertaking a grueling challenge, bear crawling a cumulative 777 laps of the St. Legends pitch in 20+1 days begining the 1st of March.""")
 st.markdown("""To read our story, and for more details about the challenge, please see the link below:
 [https://uk.virginmoneygiving.com/StJohnsRedboys](https://uk.virginmoneygiving.com/StJohnsRedboys)""")
-st.markdown("""For source code and licence please see [GitHub](https://github.com/jagoosw/777Dashboard). Copyright 2021 Jago Strong-Wright [MIT Licence](https://github.com/jagoosw/777Dashboard/blob/master/LICENCE.md)""",unsafe_allow_html=True)
 
 show_table=st.checkbox("Show data",value=False)
 if show_table==True:
     st.dataframe(df_unstack)
+st.markdown("""For source code and licence please see [GitHub](https://github.com/jagoosw/777Dashboard). Copyright 2021 Jago Strong-Wright [MIT Licence](https://github.com/jagoosw/777Dashboard/blob/master/LICENCE.md)""",unsafe_allow_html=True)
