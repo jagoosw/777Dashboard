@@ -77,3 +77,7 @@ To raise money for the Bone Cancer Research Trust, the Garcons are undertaking a
 st.markdown("""To read our story, and for more details about the challenge, please see the link below:
 [https://uk.virginmoneygiving.com/StJohnsRedboys](https://uk.virginmoneygiving.com/StJohnsRedboys)""")
 st.markdown("""For source code and licence please see [GitHub](https://github.com/jagoosw/777Dashboard). Copyright 2021 Jago Strong-Wright [MIT Licence](https://github.com/jagoosw/777Dashboard/blob/master/LICENCE.md)""",unsafe_allow_html=True)
+
+show_table=st.checkbox("Show data",value=False)
+if show_table==True:
+    st.dataframe(df_unstack)
