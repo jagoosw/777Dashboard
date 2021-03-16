@@ -48,14 +48,10 @@ df_unstack=df_unstack.sort_values([df_unstack.index[-1]],axis=1,ascending=False)
 names=[item[1] for item in df_unstack.keys().to_list()]
 dist=df_unstack.iloc[-1].to_list()
 dists=[(name,dist[ind]) for ind,name in enumerate(names)]
-options = st.checkbox("Show options")
-if options==True:
-    phone=st.checkbox("Optimise for phone",value=True)
-    bars=st.checkbox("Show individual bars", value=False)
-    target=st.checkbox("Show full target distance",value=False)
-else:
-    phone=True
-    bars=target=False
+
+phone=st.checkbox("Optimise for phone",value=True)
+bars=st.checkbox("Show individual bars", value=False)
+target=st.checkbox("Show full target distance",value=False)
 size=(9,16) if phone else (14,7)
 with _lock:
     adj=1 if cumtot[day-3]==cumtot[day-2] else 0
