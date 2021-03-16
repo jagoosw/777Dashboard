@@ -48,25 +48,41 @@ df_unstack=df_unstack.sort_values([df_unstack.index[-1]],axis=1,ascending=False)
 names=[item[1] for item in df_unstack.keys().to_list()]
 dist=df_unstack.iloc[-1].to_list()
 dists=[(name,dist[ind]) for ind,name in enumerate(names)]
-phone=st.checkbox("Optimise for phone",value=True)
+options = st.checkbox("Show options")
+if options==True:
+    phone=st.checkbox("Optimise for phone",value=True)
+    bars=st.checkbox("Show individual bars", value=False)
+    target=st.checkbox("Show full target distance",value=False)
+else:
+    phone=True
+    bars=target=False
 size=(9,16) if phone else (14,7)
 with _lock:
-    plot=df_unstack.plot(kind='area',y='distance', stacked = True,legend=False, figsize=size, cmap="gist_heat")
-
-    ax2=plot.twinx()
-    c=len(dists)
     adj=1 if cumtot[day-3]==cumtot[day-2] else 0
+    if bars==True:
+        plot=df_unstack.plot(kind='area',y='distance', stacked = True,legend=False, figsize=size, cmap="gist_heat")
+        ax2=plot.twinx()
+        c=len(dists)
+        
 
-    for bear in dists:
-            x=c*(day-adj)/len(dists)
-            ax2.plot([x,x],[0,bear[1]],linewidth=5)
-            c-=1
-    ax2.set_ylim(0)
-    ax2.legend([p[1] for p in df_unstack.keys()[:20]], title="Leaderboard (right to left)")
-    plot.set_xlim(1,day-adj+.2)
+        for bear in dists:
+                x=c*(day-adj)/len(dists)
+                ax2.plot([x,x],[0,bear[1]],linewidth=5)
+                c-=1
+        ax2.set_ylim(0)
+        ax2.legend([p[1] for p in df_unstack.keys()[:20]], title="Leaderboard (right to left)")
+        ax2.set_ylabel("Individual distance/m")
+        plot.set_xlim(1,day-adj+.1)
+    else:
+        plot=df_unstack.plot(kind='area',y='distance', stacked = True,legend=False, figsize=size)
+        plot.legend([p[1] for p in df_unstack.keys()[:20]], title="Leaderboard (bottom to top)")
+        plot.set_xlim(1,day-adj)
     plot.set_xlabel("Day")
     plot.set_ylabel("Total distance/m")
-    ax2.set_ylabel("Individual distance/m")
+    if target==True:
+        plot.set_ylim(0,777*300+10000)
+        plot.plot([0,20+1],[777*300,777*300], color="red")
+    
     plot.set_title("The Redboy's 777 Laps of St Legends in memory of Sam Fitzsimmons: Our progress")
 
     fig = plot.get_figure()
@@ -80,4 +96,5 @@ st.markdown("""To read our story, and for more details about the challenge, plea
 show_table=st.checkbox("Show data",value=False)
 if show_table==True:
     st.dataframe(df_unstack)
+
 st.markdown("""For source code and licence please see [GitHub](https://github.com/jagoosw/777Dashboard). Copyright 2021 Jago Strong-Wright [MIT Licence](https://github.com/jagoosw/777Dashboard/blob/master/LICENCE.md)""",unsafe_allow_html=True)
