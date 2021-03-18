@@ -14,15 +14,19 @@ _lock = RendererAgg.lock
 st.title("The Redboy's 777 Laps of St Legends in memory of Sam Fitzsimmons")
 data_file=str(pathlib.Path(__file__).parent.absolute())+"/data.dat"
 
-if (time.time()-os.stat("data.dat").st_mtime)>60:
-    try:
-        data=pd.read_excel('https://drive.google.com/uc?id=1KOAFOCxiyeom2XjN7aDW4Sys1NYxjXqk&export=download',sheet_name='data_input',engine='openpyxl').iloc[4:].drop(["Unnamed: 22","Unnamed: 23"],axis=1).fillna(0)
-        data.to_pickle("data.dat")
-    except:
+if os.path.exists("data.dat"):
+    if (time.time()-os.stat("data.dat").st_mtime)>60:
+        try:
+            data=pd.read_excel('https://drive.google.com/uc?id=1KOAFOCxiyeom2XjN7aDW4Sys1NYxjXqk&export=download',sheet_name='data_input',engine='openpyxl').iloc[4:].drop(["Unnamed: 22","Unnamed: 23"],axis=1).fillna(0)
+            data.to_pickle("data.dat")
+        except:
+            data=pd.read_pickle("data.dat")
+            st.markdown("Warning: this plot is quite old because Google is rate limiting how often the app can fetch the data")
+    else:
         data=pd.read_pickle("data.dat")
-        st.markdown("Warning: this plot is quite old because Google is rate limiting how often the app can fetch the data")
 else:
-    data=pd.read_pickle("data.dat")
+    data=pd.read_excel('https://drive.google.com/uc?id=1KOAFOCxiyeom2XjN7aDW4Sys1NYxjXqk&export=download',sheet_name='data_input',engine='openpyxl').iloc[4:].drop(["Unnamed: 22","Unnamed: 23"],axis=1).fillna(0)
+    data.to_pickle("data.dat")
         
 total=[0,]+data.sum(axis=0).to_list()[1:]
 cumtot=[sum(total[:ind+1]) for ind,v in enumerate(total)]
