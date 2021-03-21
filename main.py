@@ -1,6 +1,6 @@
 from matplotlib.backends.backend_agg import RendererAgg
 import streamlit as st
-import time, os, pathlib, multiprocessing, matplotlib
+import time, os, pathlib, multiprocessing, matplotlib, warnings
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -11,22 +11,58 @@ matplotlib.use("agg")
 
 _lock = RendererAgg.lock
 
+@st.cache(ttl=60*10,hash_funcs={pd.DataFrame: lambda _: None,matplotlib.figure.Figure: lambda _: None})
+def draw_graph(df_unstack,bars,target,size,day):
+        adj=1 if cumtot[day-3]==cumtot[day-2] else 0
+        if bars==True:
+            plot=df_unstack.plot(kind='area',y='distance', stacked = True,legend=False, figsize=size, cmap="gist_heat")
+            ax2=plot.twinx()
+            c=len(dists)
+            
+
+            for bear in dists:
+                    x=c*(day-adj)/len(dists)
+                    ax2.plot([x,x],[0,bear[1]],linewidth=5)
+                    c-=1
+            ax2.set_ylim(0)
+            ax2.legend([p[1] for p in df_unstack.keys()[:20]], title="Leaderboard (right to left)")
+            ax2.set_ylabel("Individual distance/m")
+            plot.set_xlim(1,day-adj+.1)
+        else:
+            plot=df_unstack.plot(kind='area',y='distance', stacked = True,legend=False, figsize=size)
+            plot.legend([p[1] for p in df_unstack.keys()[:20]], title="Leaderboard (bottom to top)")
+            plot.set_xlim(1,day-adj)
+        plot.set_xlabel("Day")
+        plot.set_ylabel("Total distance/m")
+        if target==True:
+            plot.set_ylim(0,777*300+10000)
+            plot.plot([0,20+1],[777*300,777*300], color="red")
+        
+        plot.set_title("The Redboy's 777 Laps of St Legends in memory of Sam Fitzsimmons: Our progress")
+        fig = plot.get_figure()
+        return fig
+
+@st.cache(ttl=60*2)
+def get_data():
+    if os.path.exists("data.dat"):
+        if (time.time()-os.stat("data.dat").st_mtime)>60:
+            try:
+                data=pd.read_excel('https://drive.google.com/uc?id=1KOAFOCxiyeom2XjN7aDW4Sys1NYxjXqk&export=download',sheet_name='data_input',engine='openpyxl').iloc[4:].drop(["Unnamed: 22","Unnamed: 23"],axis=1).fillna(0)
+                data.to_pickle("data.dat")
+            except:
+                data=pd.read_pickle("data.dat")
+                st.markdown("Warning: this plot is quite old because Google is rate limiting how often the app can fetch the data")
+        else:
+            data=pd.read_pickle("data.dat")
+    else:
+        data=pd.read_excel('https://drive.google.com/uc?id=1KOAFOCxiyeom2XjN7aDW4Sys1NYxjXqk&export=download',sheet_name='data_input',engine='openpyxl').iloc[4:].drop(["Unnamed: 22","Unnamed: 23"],axis=1).fillna(0)
+        data.to_pickle("data.dat")  
+    return data
+
 st.title("The Redboy's 777 Laps of St Legends in memory of Sam Fitzsimmons")
 data_file=str(pathlib.Path(__file__).parent.absolute())+"/data.dat"
 
-if os.path.exists("data.dat"):
-    if (time.time()-os.stat("data.dat").st_mtime)>60:
-        try:
-            data=pd.read_excel('https://drive.google.com/uc?id=1KOAFOCxiyeom2XjN7aDW4Sys1NYxjXqk&export=download',sheet_name='data_input',engine='openpyxl').iloc[4:].drop(["Unnamed: 22","Unnamed: 23"],axis=1).fillna(0)
-            data.to_pickle("data.dat")
-        except:
-            data=pd.read_pickle("data.dat")
-            st.markdown("Warning: this plot is quite old because Google is rate limiting how often the app can fetch the data")
-    else:
-        data=pd.read_pickle("data.dat")
-else:
-    data=pd.read_excel('https://drive.google.com/uc?id=1KOAFOCxiyeom2XjN7aDW4Sys1NYxjXqk&export=download',sheet_name='data_input',engine='openpyxl').iloc[4:].drop(["Unnamed: 22","Unnamed: 23"],axis=1).fillna(0)
-    data.to_pickle("data.dat")
+data=get_data()
         
 total=[0,]+data.sum(axis=0).to_list()[1:]
 cumtot=[sum(total[:ind+1]) for ind,v in enumerate(total)]
@@ -58,34 +94,7 @@ bars=st.checkbox("Show individual bars", value=False)
 target=st.checkbox("Show full target distance",value=False)
 size=(9,16) if phone else (14,7)
 with _lock:
-    adj=1 if cumtot[day-3]==cumtot[day-2] else 0
-    if bars==True:
-        plot=df_unstack.plot(kind='area',y='distance', stacked = True,legend=False, figsize=size, cmap="gist_heat")
-        ax2=plot.twinx()
-        c=len(dists)
-        
-
-        for bear in dists:
-                x=c*(day-adj)/len(dists)
-                ax2.plot([x,x],[0,bear[1]],linewidth=5)
-                c-=1
-        ax2.set_ylim(0)
-        ax2.legend([p[1] for p in df_unstack.keys()[:20]], title="Leaderboard (right to left)")
-        ax2.set_ylabel("Individual distance/m")
-        plot.set_xlim(1,day-adj+.1)
-    else:
-        plot=df_unstack.plot(kind='area',y='distance', stacked = True,legend=False, figsize=size)
-        plot.legend([p[1] for p in df_unstack.keys()[:20]], title="Leaderboard (bottom to top)")
-        plot.set_xlim(1,day-adj)
-    plot.set_xlabel("Day")
-    plot.set_ylabel("Total distance/m")
-    if target==True:
-        plot.set_ylim(0,777*300+10000)
-        plot.plot([0,20+1],[777*300,777*300], color="red")
-    
-    plot.set_title("The Redboy's 777 Laps of St Legends in memory of Sam Fitzsimmons: Our progress")
-
-    fig = plot.get_figure()
+    fig=draw_graph(df_unstack,bars,target,size,day)
     st.pyplot(fig)
 
 st.markdown("""In May of last year our beloved Captain EEE, Sam Fitzsimmons, passed away with Ewing's Sarcoma - a rare form of bone cancer.
