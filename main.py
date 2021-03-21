@@ -55,8 +55,8 @@ dist=df_unstack.iloc[-1].to_list()
 dists=[(name,dist[ind]) for ind,name in enumerate(names)]
 
 phone=st.checkbox("Optimise for phone",value=True)
-bars=st.checkbox("Show individual bars", value=False)
-target=st.checkbox("Show full target distance",value=False)
+bars=st.checkbox("Show individual bars", value=True)
+target=st.checkbox("Show full target distance",value=True)
 size=(9,16) if phone else (14,7)
 with _lock:
     adj=1 if cumtot[day-3]==cumtot[day-2] else 0
