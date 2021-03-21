@@ -31,6 +31,7 @@ else:
 total=[0,]+data.sum(axis=0).to_list()[1:]
 cumtot=[sum(total[:ind+1]) for ind,v in enumerate(total)]
 day=int(datetime.utcnow().strftime("%d"))
+day=20+1 if day>20+1 else day
 
 d2={"name":[],"day":[],"distance":[]}
 people={k[1]:0 for k in data.itertuples()}
